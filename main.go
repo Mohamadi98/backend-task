@@ -24,6 +24,9 @@ func serveApplication() {
 	appRoutes := router.Group("/application")
 	appRoutes.POST("", controller.CreateApplication)
 	appRoutes.GET("", controller.GetApplications)
+	appRoutes.GET("/:token", controller.GetApplicationByToken)
+	appRoutes.PUT("/:token", controller.UpdateApplication)
+	appRoutes.DELETE("/:token", controller.DeleteApplication)
 
 	router.Run("localhost:8080")
 	fmt.Println("Server Running On Port 8080")
