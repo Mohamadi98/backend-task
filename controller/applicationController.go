@@ -3,6 +3,7 @@ package controller
 import (
 	"backend-task/model"
 	"backend-task/service"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -29,6 +30,14 @@ func CreateApplication(context *gin.Context) {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	appKey := fmt.Sprintf("app-%v", app.Token)
+	fmt.Println(appKey)
+	redisError := service.SetKey(appKey, 0)
+	if redisError != nil {
+		fmt.Println("error creating an app key: ", redisError)
+	}
+	fmt.Println("an app key created successfuly!")
 
 	context.JSON(http.StatusCreated, gin.H{"message": "Application Created Successfuly!"})
 }
