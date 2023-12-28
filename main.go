@@ -4,6 +4,7 @@ import (
 	"backend-task/controller"
 	"backend-task/database"
 	"backend-task/model"
+	"backend-task/redis"
 	"fmt"
 	"log"
 	"net/http"
@@ -15,6 +16,7 @@ import (
 func main() {
 	loadEnv()
 	loadDatabase()
+	loadRedis()
 	serveApplication()
 }
 
@@ -42,6 +44,10 @@ func loadEnv() {
 func loadDatabase() {
 	database.Connect()
 	database.Database.AutoMigrate(&model.Application{}, &model.Chat{}, &model.Message{})
+}
+
+func loadRedis() {
+	redis.Connect()
 }
 
 func serverHealth(c *gin.Context) {
