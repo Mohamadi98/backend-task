@@ -24,7 +24,7 @@ func CreateApplication(context *gin.Context) {
 		Token: service.GenerateIdentifier(),
 	}
 
-	_, err := service.CreateApplication(app)
+	err := service.CreateApplication(&app)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -34,7 +34,8 @@ func CreateApplication(context *gin.Context) {
 }
 
 func GetApplications(context *gin.Context) {
-	apps, err := service.GetApplications()
+	var apps []model.Application
+	err := service.GetApplications(&apps)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -45,9 +46,10 @@ func GetApplications(context *gin.Context) {
 }
 
 func GetApplicationByToken(context *gin.Context) {
+	var app model.Application
 	token := context.Param("token")
 
-	app, err := service.GetApplicationByToken(token)
+	err := service.GetApplicationByToken(token, &app)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -74,11 +76,11 @@ func UpdateApplication(context *gin.Context) {
 		return
 	}
 
-	IsUpdated, err := service.UpdateApplication(token, requestData.Name)
+	isUpdated, err := service.UpdateApplication(token, requestData.Name)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	} else if !IsUpdated {
+	} else if !isUpdated {
 		context.JSON(http.StatusNotFound, gin.H{"error": "No Row Found With This Token"})
 		return
 	}
@@ -89,11 +91,11 @@ func UpdateApplication(context *gin.Context) {
 func DeleteApplication(context *gin.Context) {
 	token := context.Param("token")
 
-	IsUpdated, err := service.DeleteApplication(token)
+	isDeleted, err := service.DeleteApplication(token)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	} else if !IsUpdated {
+	} else if !isDeleted {
 		context.JSON(http.StatusNotFound, gin.H{"error": "No Row Found With This Token"})
 		return
 	}

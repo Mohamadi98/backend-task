@@ -5,35 +5,33 @@ import (
 	"backend-task/model"
 )
 
-func CreateApplication(app model.Application) (model.Application, error) {
+func CreateApplication(app *model.Application) error {
 	result := database.Database.Create(&app)
 	if result.Error != nil {
-		return model.Application{}, result.Error
+		return result.Error
 	}
 
-	return app, nil
+	return nil
 }
 
-func GetApplications() ([]model.Application, error) {
-	var app []model.Application
-	result := database.Database.Find(&app)
+func GetApplications(apps *[]model.Application) error {
+	result := database.Database.Find(&apps)
 
 	if result.Error != nil {
-		return []model.Application{}, result.Error
+		return result.Error
 	}
 
-	return app, nil
+	return nil
 }
 
-func GetApplicationByToken(token string) (model.Application, error) {
-	var app model.Application
+func GetApplicationByToken(token string, app *model.Application) error {
 	result := database.Database.Where("token = ?", token).Find(&app)
 
 	if result.Error != nil {
-		return model.Application{}, result.Error
+		return result.Error
 	}
 
-	return app, nil
+	return nil
 }
 
 func UpdateApplication(token, newName string) (bool, error) {
