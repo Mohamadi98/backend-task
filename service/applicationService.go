@@ -27,7 +27,7 @@ func GetApplications(apps *[]model.Application) error {
 }
 
 func GetApplicationByToken(token string, app *model.Application) error {
-	err := database.Database.Where("token = ?", token).Find(&app).Error
+	err := database.Database.Where("token = ?", token).First(&app).Error
 
 	if err != nil {
 		return err
@@ -47,18 +47,29 @@ func UpdateApplication(token, newName string) (bool, error) {
 	return true, nil
 }
 
-func DeleteApplication(token string) (bool, error) {
-	result := database.Database.Delete(&model.Application{}, "token = ?", token)
+func DeleteApplication(token string) error {
+	err := database.Database.Where("token = ?", token).First(&model.Application{}).
+		Delete(&model.Application{}).Error
 
-	if result.Error != nil || result.RowsAffected == 0 {
-		return false, result.Error
+	if err != nil {
+		return err
 	}
 
-	return true, nil
+	return nil
 }
 
 func ChatsCountIncr(app *model.Application) error {
 	err := database.Database.Model(app).Update("chats_count", gorm.Expr("chats_count + ?", 1)).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func ChatsCountDecr(app *model.Application) error {
+	err := database.Database.Model(app).Update("chats_count", gorm.Expr("chats_count - ?", 1)).Error
 
 	if err != nil {
 		return err

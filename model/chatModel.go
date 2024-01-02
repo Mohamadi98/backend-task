@@ -5,5 +5,5 @@ type Chat struct {
 	Number        uint      `json:"number"`
 	MessagesCount uint      `gorm:"column:messages_count" json:"messages_count"`
 	Message       []Message `gorm:"constraint:OnDelete:CASCADE;" json:"-"`
-	ApplicationID uint      `gorm:"column:app_id" json:"app_id"`
+	ApplicationID uint      `gorm:"column:app_id" json:"-"`
 }

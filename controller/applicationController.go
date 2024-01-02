@@ -61,9 +61,6 @@ func GetApplicationByToken(context *gin.Context) {
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	} else if app.Token == "" {
-		context.JSON(http.StatusNotFound, gin.H{})
-		return
 	}
 
 	context.JSON(http.StatusOK, gin.H{"application": app})
@@ -96,12 +93,9 @@ func UpdateApplication(context *gin.Context) {
 func DeleteApplication(context *gin.Context) {
 	token := context.Param("token")
 
-	isDeleted, err := service.DeleteApplication(token)
+	err := service.DeleteApplication(token)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	} else if !isDeleted {
-		context.JSON(http.StatusNotFound, gin.H{"error": "No Row Found With This Token"})
 		return
 	}
 
