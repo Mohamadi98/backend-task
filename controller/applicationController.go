@@ -32,14 +32,12 @@ func CreateApplication(context *gin.Context) {
 	}
 
 	appKey := fmt.Sprintf("app-%v", app.Token)
-	fmt.Println(appKey)
 	redisError := service.SetKey(appKey, 0)
 	if redisError != nil {
 		fmt.Println("error creating an app key: ", redisError)
 	}
-	fmt.Println("an app key created successfuly!")
 
-	context.JSON(http.StatusCreated, gin.H{"message": "Application Created Successfuly!"})
+	context.JSON(http.StatusCreated, gin.H{"Application": app})
 }
 
 func GetApplications(context *gin.Context) {
@@ -63,9 +61,7 @@ func GetApplicationByToken(context *gin.Context) {
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	}
-
-	if app.Token == "" {
+	} else if app.Token == "" {
 		context.JSON(http.StatusNotFound, gin.H{})
 		return
 	}

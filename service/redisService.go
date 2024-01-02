@@ -25,12 +25,12 @@ func IncrementKey(key string) error {
 	return nil
 }
 
-func GetKeyInt(key string) (int, error) {
+func GetKeyInt(key string) (uint, error) {
 	val, err := redis.RedisClient.Get(context.Background(), key).Int()
 
 	if err != nil {
-		return val, err
+		return uint(val), err
 	}
 
-	return val, nil
+	return uint(val), nil
 }

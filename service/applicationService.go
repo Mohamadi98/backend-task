@@ -3,32 +3,34 @@ package service
 import (
 	"backend-task/database"
 	"backend-task/model"
+
+	"gorm.io/gorm"
 )
 
 func CreateApplication(app *model.Application) error {
-	result := database.Database.Create(&app)
-	if result.Error != nil {
-		return result.Error
+	err := database.Database.Create(&app).Error
+	if err != nil {
+		return err
 	}
 
 	return nil
 }
 
 func GetApplications(apps *[]model.Application) error {
-	result := database.Database.Find(&apps)
+	err := database.Database.Find(&apps).Error
 
-	if result.Error != nil {
-		return result.Error
+	if err != nil {
+		return err
 	}
 
 	return nil
 }
 
 func GetApplicationByToken(token string, app *model.Application) error {
-	result := database.Database.Where("token = ?", token).Find(&app)
+	err := database.Database.Where("token = ?", token).Find(&app).Error
 
-	if result.Error != nil {
-		return result.Error
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -53,4 +55,14 @@ func DeleteApplication(token string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func ChatsCountIncr(app *model.Application) error {
+	err := database.Database.Model(app).Update("chats_count", gorm.Expr("chats_count + ?", 1)).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
