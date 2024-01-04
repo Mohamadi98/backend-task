@@ -36,15 +36,22 @@ func GetApplicationByToken(token string, app *model.Application) error {
 	return nil
 }
 
-func UpdateApplication(token, newName string) (bool, error) {
-	result := database.Database.Model(&model.Application{}).Where("token = ?", token).
-		Update("name", newName)
+func UpdateApplication(token, newName string) error {
+	var app model.Application
+	err := database.Database.Where("token = ?", token).First(&app).Error
 
-	if result.Error != nil || result.RowsAffected == 0 {
-		return false, result.Error
+	if err != nil {
+		return err
 	}
 
-	return true, nil
+	app.Name = newName
+	err = database.Database.Save(&app).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func DeleteApplication(token string) error {

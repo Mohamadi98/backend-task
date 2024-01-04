@@ -78,12 +78,9 @@ func UpdateApplication(context *gin.Context) {
 		return
 	}
 
-	isUpdated, err := service.UpdateApplication(token, requestData.Name)
+	err := service.UpdateApplication(token, requestData.Name)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	} else if !isUpdated {
-		context.JSON(http.StatusNotFound, gin.H{"error": "No Row Found With This Token"})
 		return
 	}
 

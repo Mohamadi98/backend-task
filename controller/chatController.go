@@ -25,6 +25,7 @@ func CreateChat(context *gin.Context) {
 	val, err := service.GetKeyInt(appKey)
 
 	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		fmt.Println("error fetching key value from redis")
 		return
 	}
@@ -41,8 +42,14 @@ func CreateChat(context *gin.Context) {
 		return
 	}
 
+	chatKey := fmt.Sprintf("chat-%v-%v", chat.Number, app.Token)
+
 	if err := service.IncrementKey(appKey); err != nil {
 		fmt.Println("app key in redis was not incremented!")
+	}
+
+	if err := service.SetKey(chatKey, 0); err != nil {
+		fmt.Println("chat key was not set in redis!")
 	}
 
 	if err := service.ChatsCountIncr(&app); err != nil {
