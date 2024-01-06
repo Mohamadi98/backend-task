@@ -122,6 +122,11 @@ func DeleteChat(context *gin.Context) {
 		return
 	}
 
+	chatKey := fmt.Sprintf("chat-%v-%v", number, token)
+	if service.DeleteKey(chatKey); err != nil {
+		fmt.Println("chat key was not deleted in redis: ", err)
+	}
+
 	if err = service.ChatsCountDecr(&app); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

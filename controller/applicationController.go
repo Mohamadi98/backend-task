@@ -96,5 +96,10 @@ func DeleteApplication(context *gin.Context) {
 		return
 	}
 
+	appKey := fmt.Sprintf("app-%v", token)
+	if err := service.DeleteKey(appKey); err != nil {
+		fmt.Println("app redis key was not deleted: ", err)
+	}
+
 	context.JSON(http.StatusOK, gin.H{"message": "Application Deleted Successfuly!"})
 }

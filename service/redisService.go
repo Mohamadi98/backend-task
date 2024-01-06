@@ -34,3 +34,13 @@ func GetKeyInt(key string) (uint, error) {
 
 	return uint(val), nil
 }
+
+func DeleteKey(key string) error {
+	err := redis.RedisClient.Del(context.Background(), key).Err()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
