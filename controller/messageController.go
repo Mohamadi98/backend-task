@@ -65,5 +65,39 @@ func CreateMessage(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusCreated, gin.H{"message": message})
+}
 
+func UpdateMessage(context *gin.Context) {
+	var requestBody model.RequestBody
+	var app model.Application
+	var chat model.Chat
+	token := context.Param("token")
+	number, _ := strconv.Atoi(context.Param("number"))
+	msgNumber, _ := strconv.Atoi(context.Param("msgnumber"))
+
+	err := context.ShouldBind(&requestBody)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	} else if requestBody.Body == "" {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Body was not provided!"})
+		return
+	}
+
+	if err := service.GetApplicationByToken(token, &app); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := service.GetChatByNumber(app.ID, number, &chat); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := service.UpdateMessage(chat.ID, msgNumber, requestBody.Body); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"message": "Message Updated Successfuly!"})
 }
