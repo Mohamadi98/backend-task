@@ -66,7 +66,7 @@ func DeleteApplication(token string) error {
 }
 
 func ChatsCountIncr(app *model.Application) error {
-	err := database.Database.Model(app).Update("chats_count", gorm.Expr("chats_count + ?", 1)).Error
+	err := database.Database.Model(&app).Update("chats_count", gorm.Expr("chats_count + ?", 1)).Error
 
 	if err != nil {
 		return err
@@ -76,7 +76,7 @@ func ChatsCountIncr(app *model.Application) error {
 }
 
 func ChatsCountDecr(app *model.Application) error {
-	err := database.Database.Model(app).Update("chats_count", gorm.Expr("chats_count - ?", 1)).Error
+	err := database.Database.Model(&app).Update("chats_count", gorm.Expr("chats_count - ?", 1)).Error
 
 	if err != nil {
 		return err
