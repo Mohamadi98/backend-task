@@ -101,3 +101,57 @@ func UpdateMessage(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{"message": "Message Updated Successfuly!"})
 }
+
+func GetMessages(context *gin.Context) {
+	var messages []model.Message
+	var app model.Application
+	var chat model.Chat
+	token := context.Param("token")
+	number, _ := strconv.Atoi(context.Param("number"))
+
+	if err := service.GetApplicationByToken(token, &app); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := service.GetChatByNumber(app.ID, number, &chat); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := service.GetMessages(chat.ID, &messages); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"Messages": messages})
+}
+
+func DeleteMessage(context *gin.Context) {
+	var app model.Application
+	var chat model.Chat
+	token := context.Param("token")
+	number, _ := strconv.Atoi(context.Param("number"))
+	msgNumber, _ := strconv.Atoi(context.Param("msgnumber"))
+
+	if err := service.GetApplicationByToken(token, &app); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := service.GetChatByNumber(app.ID, number, &chat); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := service.DeleteMessage(chat.ID, msgNumber); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := service.MessagesCountDecr(&chat); err != nil {
+		fmt.Println("messages count was not updated!")
+	}
+
+	context.JSON(http.StatusOK, gin.H{"messages": "message deleted successfuly!"})
+}

@@ -31,3 +31,24 @@ func UpdateMessage(chatID uint, number int, newBody string) error {
 
 	return nil
 }
+
+func GetMessages(chatID uint, messages *[]model.Message) error {
+	err := database.Database.Where("chat_id = ?", chatID).Find(&messages).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteMessage(chatID uint, number int) error {
+	err := database.Database.Where("chat_id = ? AND number = ?", chatID, number).First(&model.Message{}).
+		Delete(&model.Message{}).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

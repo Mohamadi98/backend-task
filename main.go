@@ -35,6 +35,8 @@ func serveApplication() {
 	appRoutes.DELETE("/:token/chat/:number", controller.DeleteChat)
 	appRoutes.POST("/:token/chat/:number", controller.CreateMessage)
 	appRoutes.PUT("/:token/chat/:number/message/:msgnumber", controller.UpdateMessage)
+	appRoutes.GET("/:token/chat/:number/message", controller.GetMessages)
+	appRoutes.DELETE("/:token/chat/:number/message/:msgnumber", controller.DeleteMessage)
 
 	router.Run("localhost:8080")
 	fmt.Println("Server Running On Port 8080")
